@@ -43,7 +43,12 @@ setup()
         const results = await scraper(browser, data, job.timestamp);
 
         logger.info(`Completed ${job.id} for ${data.collection}`);
-        return results; // Return results to the Bull listener
+
+        // Return the data and the job's data to the listener for parsing
+        return {
+          data: results,
+          meta: job.data,
+        };
       } catch (err) {
         let oldPages = await browser.pages();
         await Promise.all(
