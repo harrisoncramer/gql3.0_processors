@@ -23,29 +23,27 @@ export const openNewPages = async (browser, links) => {
   return pages;
 };
 
-export const getPageData = async ({ pages, selectors }) => {
-  let values = pages.map(async (page) => {
-    return page.evaluate((selectors) => {
-      let title = getTextFromDocument(selectors.title);
-      let date = getTextFromDocument(selectors.date);
-      let time = getTextFromDocument(selectors.time);
-      let location = getNextTextFromDocument(selectors.location).replaceAll([
-        "House Office Building, Washington, DC 20515",
-        " House Office Building",
-      ]);
-      let witnesses = makeArrayFromDocument(selectors.witnesses)
-        .map((x) => clean(x.textContent))
-        .filter((x) => x !== "");
-      return {
-        title,
-        date,
-        time,
-        location,
-        witnesses,
-      };
-    }, selectors);
-  });
-
-  await Promise.all(values);
-  return values;
-};
+export const getPageData = async ({ pages, selectors }) =>
+  Promise.all(
+    pages.map(async (page) => {
+      return page.evaluate((selectors) => {
+        let title = getTextFromDocument(selectors.title);
+        let date = getTextFromDocument(selectors.date);
+        let time = getTextFromDocument(selectors.time);
+        let location = getNextTextFromDocument(selectors.location).replaceAll([
+          "House Office Building, Washington, DC 20515",
+          " House Office Building",
+        ]);
+        let witnesses = makeArrayFromDocument(selectors.witnesses)
+          .map((x) => clean(x.textContent))
+          .filter((x) => x !== "");
+        return {
+          title,
+          date,
+          time,
+          location,
+          witnesses,
+        };
+      }, selectors);
+    })
+  );

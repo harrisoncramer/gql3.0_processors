@@ -33,7 +33,7 @@ const setup = async () => {
 };
 
 setup()
-  .then(({ queue, browser, page }) => {
+  .then(({ queue, browser }) => {
     logger.info("Processor successfully set up.");
     queue.process(async (job) => {
       try {
@@ -41,11 +41,14 @@ setup()
         const data = job.data;
         const scraper = pickScraper(data);
         const results = await scraper(browser, data, job.timestamp);
+
         logger.info(`Completed ${job.id} for ${data.collection}`);
-        return JSON.stringify(results); // Return the results to the Redis cache.
+        return results; // Return results to the Bull listener
       } catch (err) {
         let oldPages = await browser.pages();
-        await Promise.all(oldPages.map((page, i) => i > 0 && page.close()));
+        await Promise.all(
+          oldPages.map(async (page, i) => i > 0 && (await page.close()))
+        );
         logger.error(`Job ${job.id} could not be processed. `, err);
       }
     });
