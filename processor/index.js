@@ -7,7 +7,7 @@ import { setupPuppeteer } from "./setup";
 import { logger } from "./loggers/winston";
 import { pickScraper } from "./scrapers";
 
-const server = async () => {
+const setup = async () => {
   try {
     var { browser, page } = await setupPuppeteer({ type: "tor" });
   } catch (err) {
@@ -16,7 +16,7 @@ const server = async () => {
   }
 
   try {
-    var myQueue = new Bull("myQueue", {
+    var queue = new Bull("myQueue", {
       redis: {
         port: process.env.REDIS_PORT,
         host: process.env.REDIS_URL,
@@ -29,26 +29,27 @@ const server = async () => {
     throw err;
   }
 
-  myQueue.process(async (job) => {
-    try {
-      let data = job.data;
-      logger.info(`Running ${job.id} for ${data.collection}`);
-      const scraper = pickScraper(data);
-      let results = await scraper(browser, page, data, job.timestamp);
-      logger.info(`Completed ${job.id} for ${data.collection}`);
-      return results; // Return the results to the Redis cache.
-    } catch (err) {
-      logger.error(`Job ${job.id} could not be processed. `, err);
-      throw err;
-    }
-  });
+  return { queue, browser, page };
 };
 
-server()
-  .then(() => {
+setup()
+  .then(({ queue, browser, page }) => {
     logger.info("Processor successfully set up.");
+    queue.process(async (job) => {
+      try {
+        logger.info(`Running ${job.id} for ${job.data.collection}`);
+        const data = job.data;
+        const scraper = pickScraper(data);
+        const results = await scraper(browser, page, data, job.timestamp);
+        logger.info(`Completed ${job.id} for ${data.collection}`);
+        return JSON.stringify(results); // Return the results to the Redis cache.
+      } catch (err) {
+        logger.error(`Job ${job.id} could not be processed. `, err);
+        throw err;
+      }
+    });
   })
   .catch((err) => {
-    logger.error("There was an error", err);
+    logger.error("There was an error with the processor. ", err);
     process.exit(1);
   });

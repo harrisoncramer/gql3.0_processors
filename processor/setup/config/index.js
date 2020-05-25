@@ -58,8 +58,8 @@ export const setPageBlockers = async (page) => {
 };
 
 export const setPageScripts = async (page) => {
-  await page.addScriptTag({ path: "./server/setup/functions/index.js" }); // Uses path from CWD
+  await page.addScriptTag({ path: "./processor/setup/functions/index.js" }); // Uses path from CWD
   await page.addScriptTag({
-    path: "./server/setup/jquery/jquery-3.4.1.slim.min.js",
+    path: "./processor/setup/jquery/jquery-3.4.1.slim.min.js",
   });
 };

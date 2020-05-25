@@ -1,8 +1,8 @@
-import { logger } from "../loggers/winston";
-import { getPageData, getLinks, openNewPages } from "./shared";
-import { setPageScripts } from "../setup/config";
+import { logger } from "../../loggers/winston";
+import { getPageData, getLinks, openNewPages } from "../internals";
+import { setPageScripts } from "../../setup/config";
 
-export const hfac = async (browser, page, data, time) => {
+export default async (browser, page, data, time) => {
   try {
     await page.goto(data.link);
   } catch (err) {

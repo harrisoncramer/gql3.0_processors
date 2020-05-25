@@ -1,7 +1,7 @@
 /* eslint-disable */
 // Many of these functions are passed into the page context
 
-import { setPageBlockers, setPageScripts } from "../setup/config";
+import { setPageBlockers, setPageScripts } from "../../setup/config";
 
 export const getLinks = async ({ page, selectors }) =>
   page.evaluate((selectors) => {

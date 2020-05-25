@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "NODE_ENV=development nodemon --exec babel-node server/index.js",
+    "dev": "NODE_ENV=development nodemon --exec babel-node processor/index.js",
     "prod:build": "webpack --config webpack.config.js",
     "prod:serve": "NODE_ENV=production node dist/index.js"
   },
