@@ -33,16 +33,15 @@ const server = async () => {
     try {
       let data = job.data;
       const scraper = pickScraper(job.data);
+      console.log(job);
       let results = await scraper(page, job.data);
-      logger.info(`Completed scraping for ${job.data.collection}`);
+      logger.info(`Completed ${job.id} for ${job.data.collection}`);
       return results; // Return the results to the Redis cache.
     } catch (err) {
-      logger.error("That job could not be processed.", err);
+      logger.error(`Job ${job.id} could not be processed.`, err);
       throw err;
     }
   });
-
-  // Do scraping
 };
 
 server()

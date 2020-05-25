@@ -15,7 +15,7 @@ let consoleOptions = {
     format.printf((info) => {
       const { level, message, timestamp } = info;
       return `[${level}] ${moment(timestamp).format(
-        "YY-MM-DD HH:mm:ss"
+        "YY-MM-DD HH:mm:ss:SSS"
       )} -- ${message}`;
     })
   ),

@@ -1,5 +1,4 @@
 export const hfac = async (page, data) => {
-  // page.goto();
-  // scraping logic
+  await page.goto(data.link);
   return { data: "OK" };
 };
