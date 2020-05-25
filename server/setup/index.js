@@ -5,6 +5,7 @@ import puppeteer from "puppeteer-extra";
 import randomUser from "random-useragent";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 puppeteer.use(StealthPlugin());
+import { setPageBlockers } from "./config";
 
 import { getProxy } from "./proxies";
 
@@ -58,7 +59,10 @@ export const setupPuppeteer = async ({ type }) => {
     logger.error("Page error. ", err);
   });
   let userAgentString = randomUser.getRandom();
+
   await page.setUserAgent(userAgentString);
+  await setPageBlockers(page);
+
   page.setDefaultNavigationTimeout(0); // May be required to lengthen this in order to get more reliable data...
 
   //// Confirm page is working

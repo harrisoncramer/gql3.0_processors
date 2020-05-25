@@ -9,7 +9,7 @@ import { pickScraper } from "./scrapers";
 
 const server = async () => {
   try {
-    var { browser, page } = await setupPuppeteer({ type: "proxy" });
+    var { browser, page } = await setupPuppeteer({ type: "tor" });
   } catch (err) {
     logger.error("Could not setup browser.");
     throw err;
@@ -32,13 +32,13 @@ const server = async () => {
   myQueue.process(async (job) => {
     try {
       let data = job.data;
-      const scraper = pickScraper(job.data);
-      console.log(job);
-      let results = await scraper(page, job.data);
-      logger.info(`Completed ${job.id} for ${job.data.collection}`);
+      logger.info(`Running ${job.id} for ${data.collection}`);
+      const scraper = pickScraper(data);
+      let results = await scraper(page, data, job.timestamp);
+      logger.info(`Completed ${job.id} for ${data.collection}`);
       return results; // Return the results to the Redis cache.
     } catch (err) {
-      logger.error(`Job ${job.id} could not be processed.`, err);
+      logger.error(`Job ${job.id} could not be processed. `, err);
       throw err;
     }
   });
