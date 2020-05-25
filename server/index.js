@@ -34,7 +34,7 @@ const server = async () => {
       let data = job.data;
       logger.info(`Running ${job.id} for ${data.collection}`);
       const scraper = pickScraper(data);
-      let results = await scraper(page, data, job.timestamp);
+      let results = await scraper(browser, page, data, job.timestamp);
       logger.info(`Completed ${job.id} for ${data.collection}`);
       return results; // Return the results to the Redis cache.
     } catch (err) {

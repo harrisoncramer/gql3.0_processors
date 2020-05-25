@@ -1,8 +1,8 @@
 import { logger } from "../loggers/winston";
-import { getLinks, filterRows } from "./shared";
+import { getPageData, getLinks, openNewPages } from "./shared";
 import { setPageScripts } from "../setup/config";
 
-export const hfac = async (page, data, time) => {
+export const hfac = async (browser, page, data, time) => {
   try {
     await page.goto(data.link);
   } catch (err) {
@@ -11,11 +11,14 @@ export const hfac = async (page, data, time) => {
   }
 
   let links;
+  let pages;
+  let pageData;
 
   try {
     await setPageScripts(page);
   } catch (err) {
     logger.error("Could not set page scripts. ", err);
+    throw err;
   }
 
   try {
@@ -26,6 +29,23 @@ export const hfac = async (page, data, time) => {
     });
   } catch (err) {
     logger.error("Could not get links. ", err);
+    throw err;
+  }
+
+  try {
+    pages = await openNewPages(browser, links);
+  } catch (err) {
+    logger.error("Could not navigate to pages. ", err);
+    throw err;
+  }
+
+  try {
+    pageData = await getPageData({
+      pages,
+    });
+    console.log(pageData);
+  } catch (err) {
+    logger.error("Could not get pageData. ".err);
     throw err;
   }
 
