@@ -40,12 +40,13 @@ setup()
         logger.info(`Running ${job.id} for ${job.data.collection}`);
         const data = job.data;
         const scraper = pickScraper(data);
-        const results = await scraper(browser, page, data, job.timestamp);
+        const results = await scraper(browser, data, job.timestamp);
         logger.info(`Completed ${job.id} for ${data.collection}`);
         return JSON.stringify(results); // Return the results to the Redis cache.
       } catch (err) {
+        let oldPages = await browser.pages();
+        await Promise.all(oldPages.map((page, i) => i > 0 && page.close()));
         logger.error(`Job ${job.id} could not be processed. `, err);
-        throw err;
       }
     });
   })

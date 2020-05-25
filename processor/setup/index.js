@@ -2,10 +2,8 @@
 import { logger } from "../loggers/winston";
 
 import puppeteer from "puppeteer-extra";
-import randomUser from "random-useragent";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 puppeteer.use(StealthPlugin());
-import { setPageBlockers } from "./config";
 
 import { getProxy } from "./proxies";
 
@@ -55,17 +53,6 @@ export const setupPuppeteer = async ({ type }) => {
 
   ///// Page setup
   const page = (await browser.pages())[0];
-  page.on("error", (err) => {
-    logger.error("Page error. ", err);
-  });
-  let userAgentString = randomUser.getRandom();
-
-  await page.setUserAgent(userAgentString);
-  await setPageBlockers(page);
-
-  page.setDefaultNavigationTimeout(0); // May be required to lengthen this in order to get more reliable data...
-
-  //// Confirm page is working
   if (isTor) {
     await page.goto("https://check.torproject.org/");
     const isUsingTor = await page.$eval("body", (el) =>
@@ -81,5 +68,5 @@ export const setupPuppeteer = async ({ type }) => {
 
   logger.info(`Configured through site on ${proxy}`);
 
-  return { browser, page };
+  return { browser };
 };
