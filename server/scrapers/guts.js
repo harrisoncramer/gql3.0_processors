@@ -42,6 +42,7 @@ export const hfac = async (browser, page, data, time) => {
   try {
     pageData = await getPageData({
       pages,
+      selectors: data.selectors.layerTwo,
     });
     console.log(pageData);
   } catch (err) {
@@ -49,5 +50,5 @@ export const hfac = async (browser, page, data, time) => {
     throw err;
   }
 
-  return links;
+  return pageData;
 };
