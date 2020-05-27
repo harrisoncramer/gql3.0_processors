@@ -7,7 +7,7 @@ export const getLinks = async ({ page, selectors }) =>
   page.evaluate((selectors) => {
     let rows = makeArrayFromDocument(selectors.rows);
     let links = rows.map((x) => getLink(x));
-    return links;
+    return links.filter((x, i) => i + 1 <= selectors.depth); // Only return pages w/in depth range, prevents overfetching w/ puppeteer
   }, selectors);
 
 export const openNewPages = async (browser, links) => {

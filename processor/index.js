@@ -35,7 +35,8 @@ const setup = async () => {
 setup()
   .then(({ queue, browser }) => {
     logger.info("Processor successfully set up.");
-    queue.process(async (job) => {
+    // Process all named jobs on this queue
+    queue.process("*", async (job) => {
       try {
         logger.info(`Running ${job.id} for ${job.data.collection}`);
         const data = job.data;
