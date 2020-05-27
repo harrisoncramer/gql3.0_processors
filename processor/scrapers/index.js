@@ -1,9 +1,9 @@
 import basic from "./types/basic";
 
-export const pickScraper = (data) =>
-  ((collection) => {
-    switch (collection) {
-      case "hfac":
+export const pickScraper = (type) =>
+  ((type) => {
+    switch (type) {
+      case "puppeteerv1":
         return basic;
     }
-  })(data.collection);
+  })(type);

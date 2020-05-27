@@ -35,15 +35,16 @@ const setup = async () => {
 setup()
   .then(({ queue, browser }) => {
     logger.info("Processor successfully set up.");
-    // Process all named jobs on this queue
+
     queue.process("*", async (job) => {
       try {
-        logger.info(`Running ${job.id} for ${job.data.collection}`);
-        const data = job.data;
-        const scraper = pickScraper(data);
-        const results = await scraper(browser, data, job.timestamp);
+        const scraper = pickScraper(job.data.type);
+        logger.info(
+          `Running ${job.id} of type ${job.data.type} for ${job.data.name}`
+        );
+        const results = await scraper(browser, job.data, job.timestamp);
 
-        logger.info(`Completed ${job.id} for ${data.collection}`);
+        logger.info(`Completed ${job.id} for ${job.data.collection}`);
 
         // Return the data and the job's data to the listener for parsing
         return {
