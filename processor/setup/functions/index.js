@@ -38,40 +38,52 @@ const getNextNodeFromDocument = (query) =>
 const getTextFromDocument = (query) =>
   clean(
     document.querySelector(query)
-      ? document.querySelector(query).textContent
+      ? document.querySelector(query).textContent.trim()
       : ""
   );
 const getNextTextFromDocument = (query) =>
   clean(
     document.querySelector(query)
-      ? document.querySelector(query).nextSibling.textContent
+      ? document.querySelector(query).nextSibling.textContent.trim()
       : ""
   );
 const getNextElementSiblingTextFromDocument = (query) =>
   clean(
     document.querySelector(query)
-      ? document.querySelector(query).nextElementSibling.textContent
+      ? document.querySelector(query).nextElementSibling.textContent.trim()
       : ""
   );
 const makeArrayFromDocument = (query) =>
   Array.from(document.querySelectorAll(query));
 const makeCleanArrayFromDocument = (query) =>
   Array.from(document.querySelectorAll(query)).map((x) =>
-    clean(x.textContent ? x.textContent : "")
+    clean(x.textContent ? x.textContent.trim() : "")
   );
 
 const getFromNode = (node, query) => node.querySelector(query);
 const getFromText = (node, query) =>
-  clean(node.querySelector(query) ? node.querySelector(query).textContent : "");
+  clean(
+    node.querySelector(query)
+      ? node.querySelector(query).textContent.trim()
+      : ""
+  );
 const getFromLink = (node, query) => node.querySelector(query).href;
 const getNextMatch = (node, query) =>
   node.querySelector(query).nextSibling.nodeValue;
 const getNextElementSiblingText = (query) =>
-  clean(document.querySelector(query).nextElementSibling.textContent);
+  clean(document.querySelector(query).nextElementSibling.textContent.trim());
 const getNodesFromArray = (arr, query) =>
   arr.map((x) => Array.from(x.querySelectorAll(query)));
 
 const makeTextArray = (node, query) =>
   Array.from(node.querySelectorAll(query)).map((x) =>
-    clean(x.textContent ? x.textContent : "")
+    clean(x.textContent ? x.textContent.trim() : "")
   );
+
+// JQuery Methods
+
+const getNthInstanceOfText = (node, query, num) =>
+  $(node).find(`${query}:eq(${num})`).text();
+
+const getNthInstanceOf = (node, query, num) =>
+  $(node).find(`${query}:eq(${num})`);

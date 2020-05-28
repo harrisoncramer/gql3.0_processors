@@ -10,6 +10,30 @@ export const getLinks = async ({ page, selectors }) =>
     return links.filter((x, i) => i + 1 <= selectors.depth); // Only return pages w/in depth range, prevents overfetching w/ puppeteer
   }, selectors);
 
+export const getLinksAndData = async ({ page, selectors }) =>
+  page.evaluate((selectors) => {
+    let rows = makeArrayFromDocument(selectors.rows);
+    return rows
+      .filter((x, i) => i + 1 <= selectors.depth)
+      .map((x) => {
+        let link = getLink(x);
+        let title = getLinkText(x);
+        let location = getFromText(x, selectors.location);
+        let date = getFromText(x, selectors.date);
+        let time = getNthInstanceOfText(x, selectors.time, 1);
+        return { link, title, location, date, time };
+      });
+  }, selectors);
+
+export const getAdditionalData = ({ pages, selectors }) =>
+  Promise.all(
+    pages.map(async (page) => {
+      return page.evaluate((selectors) => {
+        debugger;
+      });
+    })
+  );
+
 export const openNewPages = async (browser, links) => {
   let pages = await Promise.all(links.map(() => browser.newPage()));
   await Promise.all(
