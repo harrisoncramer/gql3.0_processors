@@ -5,7 +5,6 @@ import { setPageBlockers, setPageScripts } from "../../setup/config";
 
 export const getLinks = async ({ page, selectors }) =>
   page.evaluate((selectors) => {
-    debugger;
     let rows = makeArrayFromDocument(selectors.rows);
     let links = rows.map((x) => getLink(x));
     return links.filter((x, i) => i + 1 <= selectors.depth && x); // Only return pages w/in depth range, prevents overfetching w/ puppeteer (and where x !== null)
@@ -76,15 +75,6 @@ export const getLinksAndDataV4 = async ({ page, selectors }) =>
       });
   }, selectors);
 
-export const getAdditionalData = ({ pages, selectors }) =>
-  Promise.all(
-    pages.map(async (page) => {
-      return page.evaluate((selectors) => {
-        debugger;
-      });
-    })
-  );
-
 export const openNewPages = async (browser, links) => {
   let pages = await Promise.all(links.map(() => browser.newPage()));
   await Promise.all(
@@ -102,7 +92,6 @@ export const getPageData = async ({ pages, selectors }) =>
   Promise.all(
     pages.map(async (page) => {
       return page.evaluate((selectors) => {
-        debugger;
         let title = getTextFromDocument(selectors.title);
         let date = selectors.label
           ? getNextTextFromDocument(selectors.date)

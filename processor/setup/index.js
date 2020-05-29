@@ -13,7 +13,7 @@ export const setupPuppeteer = async ({ type }) => {
   // Set initial variables
   const isProduction = process.env.NODE_ENV === "production";
   let proxy = null;
-  const args = ["--no-sandbox"];
+  const args = ["--no-sandbox", "--unlimited-storage"];
 
   const isTor = type === "tor";
   const isProxy = type === "proxy";
