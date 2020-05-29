@@ -29,7 +29,11 @@ Array.prototype.flatten = function () {
 };
 
 const clean = (item) => item.replace(/\s\s+/g, " ").trim();
-const getLink = (node) => node.querySelector("a").href;
+const getLink = (node) => {
+  let link = node.querySelector("a");
+  return link ? link.href : null;
+};
+
 const getLinkText = (node) => clean(node.querySelector("a").textContent);
 
 const getNodeFromDocument = (query) => document.querySelector(query);

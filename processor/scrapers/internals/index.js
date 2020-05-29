@@ -5,9 +5,10 @@ import { setPageBlockers, setPageScripts } from "../../setup/config";
 
 export const getLinks = async ({ page, selectors }) =>
   page.evaluate((selectors) => {
+    debugger;
     let rows = makeArrayFromDocument(selectors.rows);
     let links = rows.map((x) => getLink(x));
-    return links.filter((x, i) => i + 1 <= selectors.depth); // Only return pages w/in depth range, prevents overfetching w/ puppeteer
+    return links.filter((x, i) => i + 1 <= selectors.depth && x); // Only return pages w/in depth range, prevents overfetching w/ puppeteer (and where x !== null)
   }, selectors);
 
 export const getLinksAndData = async ({ page, selectors }) =>
@@ -101,9 +102,14 @@ export const getPageData = async ({ pages, selectors }) =>
   Promise.all(
     pages.map(async (page) => {
       return page.evaluate((selectors) => {
+        debugger;
         let title = getTextFromDocument(selectors.title);
-        let date = getTextFromDocument(selectors.date);
-        let time = getTextFromDocument(selectors.time);
+        let date = selectors.label
+          ? getNextTextFromDocument(selectors.date)
+          : getTextFromDocument(selectors.date);
+        let time = selectors.label
+          ? getNextTextFromDocument(selectors.time)
+          : getTextFromDocument(selectors.time);
         let location = getNextTextFromDocument(selectors.location).replaceAll([
           "House Office Building, Washington, DC 20515",
           " House Office Building",

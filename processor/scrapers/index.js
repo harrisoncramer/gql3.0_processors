@@ -6,7 +6,7 @@ import puppeteerv4 from "./types/puppeteerv4";
 export const pickScraper = (type) =>
   ((type) => {
     switch (type) {
-      case "puppeteerv1":
+      case "puppeteerv1" || "puppeteerv1.1":
         return puppeteerv1;
       case "puppeteerv2":
         return puppeteerv2;
