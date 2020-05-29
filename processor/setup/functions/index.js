@@ -87,7 +87,7 @@ const makeTextArray = (node, query) =>
 // JQuery Methods
 
 const getNthInstanceOfText = (node, query, num) =>
-  $(node).find(`${query}:eq(${num})`).text();
+  query ? $(node).find(`${query}:eq(${num})`).text() : null;
 
 const getNthInstanceOf = (node, query, num) =>
-  $(node).find(`${query}:eq(${num})`);
+  query ? $(node).find(`${query}:eq(${num})`) : null;

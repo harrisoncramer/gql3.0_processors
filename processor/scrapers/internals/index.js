@@ -21,6 +21,11 @@ export const getLinksAndData = async ({ page, selectors }) =>
         let location = getFromText(x, selectors.location);
         let date = getFromText(x, selectors.date);
         let time = getNthInstanceOfText(x, selectors.time, 1);
+        if (selectors.splitDate) {
+          // If data includes splitDate...
+          time = date.split(selectors.splitDate)[1];
+          date = date.split(selectors.splitDate)[0];
+        }
         return { link, title, location, date, time };
       });
   }, selectors);
