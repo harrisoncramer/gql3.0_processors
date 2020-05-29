@@ -39,6 +39,42 @@ export const getLinksAndDataV2 = async ({ page, selectors }) =>
       });
   }, selectors);
 
+export const getLinksAndDataV3 = async ({ page, selectors }) =>
+  page.evaluate((selectors) => {
+    let rows = makeArrayFromDocument(selectors.rows);
+    return rows
+      .filter((x, i) => i + 1 <= selectors.depth)
+      .map((x) => {
+        let link = getLink(x);
+        let title = getLinkText(x);
+        let date = getNextMatch(x, selectors.date).replace("|", "").trim();
+        let time = getNextMatch(x, selectors.time).trim();
+        return { link, title, date, time };
+      });
+  }, selectors);
+
+export const getLinksAndDataV4 = async ({ page, selectors }) =>
+  page.evaluate((selectors) => {
+    let rows = Array.from(
+      document
+        .querySelectorAll(selectors.upcomingHearings)[0]
+        .querySelectorAll(selectors.hearings)
+    );
+    return rows
+      .filter((x, i) => i + 1 <= selectors.depth)
+      .map((x) => {
+        let link = getLink(x);
+        let title = getLinkText(x);
+        let dateAndTimeInfo = getFromText(x, selectors.dateTime)
+          .split("-")
+          .map((x) => x.trim());
+        let date = dateAndTimeInfo[0];
+        let time = dateAndTimeInfo[1];
+        let location = getFromText(x, selectors.location).trim();
+        return { link, title, date, time };
+      });
+  }, selectors);
+
 export const getAdditionalData = ({ pages, selectors }) =>
   Promise.all(
     pages.map(async (page) => {
