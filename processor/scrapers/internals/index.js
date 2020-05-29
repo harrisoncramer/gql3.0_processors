@@ -25,6 +25,20 @@ export const getLinksAndData = async ({ page, selectors }) =>
       });
   }, selectors);
 
+export const getLinksAndDataV2 = async ({ page, selectors }) =>
+  page.evaluate((selectors) => {
+    let rows = makeArrayFromDocument(selectors.rows);
+    return rows
+      .filter((x, i) => i + 1 <= selectors.depth)
+      .map((x) => {
+        let link = getLink(x);
+        let title = getLinkText(x);
+        let date = getNextMatch(x, selectors.date).replace("|", "").trim();
+        let time = getNextMatch(x, selectors.time).trim();
+        return { link, title, date, time };
+      });
+  }, selectors);
+
 export const getAdditionalData = ({ pages, selectors }) =>
   Promise.all(
     pages.map(async (page) => {
