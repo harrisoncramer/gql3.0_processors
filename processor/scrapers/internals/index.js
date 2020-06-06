@@ -20,7 +20,15 @@ export const getLinksAndData = async ({ page, selectors }) =>
         let title = getLinkText(x);
         let location = getFromText(x, selectors.location);
         let date = getFromText(x, selectors.date);
-        let time = getNthInstanceOfText(x, selectors.time, 1);
+        let time;
+        // Only if time selector is present
+        if (selectors.time) {
+          time = getNthInstanceOfText(
+            x,
+            selectors.time.selector,
+            selectors.time.instance
+          );
+        }
         if (selectors.splitDate) {
           // If data includes splitDate...
           time = date.split(selectors.splitDate)[1];
