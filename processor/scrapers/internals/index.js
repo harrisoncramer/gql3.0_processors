@@ -111,12 +111,40 @@ export const getPageData = async ({ pages, selectors }) =>
         let witnesses = makeArrayFromDocument(selectors.witnesses)
           .map((x) => clean(x.textContent))
           .filter((x) => x !== "");
+        let link = document.URL;
         return {
           title,
           date,
           time,
           location,
           witnesses,
+          link,
+        };
+      }, selectors);
+    })
+  );
+
+export const getPageDataWithJQuery = async ({ pages, selectors }) =>
+  Promise.all(
+    pages.map(async (page) => {
+      return page.evaluate((selectors) => {
+        let title = getTextFromDocument(selectors.title);
+        // This complicated function turns the location, date, and time into an array
+        let info = $(selectors.jquerySelector)
+          .contents()[1]
+          .textContent.split("\n")
+          .map((x) => x.trim())
+          .filter((x) => x !== "" && x !== "@" && x !== "0");
+        let location = info[0];
+        let date = info[1];
+        let time = info[2];
+        let link = document.URL;
+        return {
+          title,
+          date,
+          time,
+          location,
+          link,
         };
       }, selectors);
     })
