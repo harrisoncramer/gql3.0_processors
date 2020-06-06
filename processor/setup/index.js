@@ -18,7 +18,7 @@ export const setupPuppeteer = async ({ type }) => {
   const isTor = type === "tor";
   const isProxy = type === "proxy";
 
-  if (!isTor && !isProxy) {
+  if (!isTor && !isProxy && process.env.NODE_ENV === "production") {
     throw new Error(
       "Incorrect type passed to puppeteer, should be 'tor' or 'proxy', provided " +
         type
@@ -31,14 +31,18 @@ export const setupPuppeteer = async ({ type }) => {
     let portIndex = getRandom(0, ports.length - 1)();
     let port = isProduction ? ports[portIndex] : "9050";
     proxy = `socks5://127.0.0.1:` + port;
-  } else {
+  }
+
+  if (isProxy) {
     let proxies = await getProxy();
     let proxyIndex = getRandom(0, proxies.length - 1)();
     let proxyData = proxies[proxyIndex];
     proxy = `http://${proxyData.ip}:${proxyData.port}`;
   }
 
-  args.push(`--proxy-server=${proxy}`);
+  if (isProxy || isTor) {
+    args.push(`--proxy-server=${proxy}`);
+  }
 
   /// Initialize Browser
   const browser = await puppeteer.launch({

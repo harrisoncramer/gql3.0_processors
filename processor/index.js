@@ -9,7 +9,7 @@ import { pickScraper } from "./scrapers";
 
 const setup = async () => {
   try {
-    var { browser, page } = await setupPuppeteer({ type: "tor" });
+    var { browser, page } = await setupPuppeteer({ type: null });
   } catch (err) {
     logger.error("Could not setup browser.");
     throw err;
