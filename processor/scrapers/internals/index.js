@@ -106,26 +106,37 @@ export const getPageData = async ({ pages, selectors }) =>
     pages.map(async (page) => {
       return page.evaluate((selectors) => {
         let title = getTextFromDocument(selectors.title);
-        let date = selectors.label
-          ? getNextTextFromDocument(selectors.date)
-          : getTextFromDocument(selectors.date);
-        let time = selectors.label
-          ? getNextTextFromDocument(selectors.time)
-          : getTextFromDocument(selectors.time);
         let location = getNextTextFromDocument(selectors.location).replaceAll([
           "House Office Building, Washington, DC 20515",
           " House Office Building",
         ]);
-        let witnesses = makeArrayFromDocument(selectors.witnesses)
-          .map((x) => clean(x.textContent))
-          .filter((x) => x !== "");
+
+        let date = null;
+        let time = null;
+        date = selectors.label
+          ? getNextTextFromDocument(selectors.date)
+          : getTextFromDocument(selectors.date);
+
+        if (selectors.time) {
+          time = selectors.label
+            ? getNextTextFromDocument(selectors.time)
+            : getTextFromDocument(selectors.time);
+        }
+        if (selectors.splitDate) {
+          // If data includes splitDate...
+          time = date.split(selectors.splitDate)[1];
+          date = date.split(selectors.splitDate)[0];
+        }
+        //let witnesses = makeArrayFromDocument(selectors.witnesses)
+        //.map((x) => clean(x.textContent))
+        //.filter((x) => x !== "");
         let link = document.URL;
         return {
           title,
           date,
           time,
           location,
-          witnesses,
+          //witnesses,
           link,
         };
       }, selectors);
