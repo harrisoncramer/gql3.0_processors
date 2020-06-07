@@ -106,11 +106,7 @@ export const getPageData = async ({ pages, selectors }) =>
     pages.map(async (page) => {
       return page.evaluate((selectors) => {
         let title = getTextFromDocument(selectors.title);
-        let location = getNextTextFromDocument(selectors.location).replaceAll([
-          "House Office Building, Washington, DC 20515",
-          " House Office Building",
-        ]);
-
+        let location = getNextTextFromDocument(selectors.location);
         let date = null;
         let time = null;
         date = selectors.label
