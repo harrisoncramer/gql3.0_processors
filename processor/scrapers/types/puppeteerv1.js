@@ -1,3 +1,7 @@
+// Opens first page, gets links
+// Opens second page, gets the rest of the data
+// Able to differentiate between two date/time tags with same CSS selector
+
 import randomUser from "random-useragent";
 
 import { getPageData, getLinks, openNewPages } from "../internals";

@@ -26,7 +26,6 @@ export default async (browser, data) => {
       page,
       selectors: data.selectors.layerOne,
     });
-    console.log(dataWithLinks);
   } catch (err) {
     logger.error("Could not get links. ", err);
     throw err;

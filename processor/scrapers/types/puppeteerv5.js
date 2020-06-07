@@ -45,11 +45,12 @@ export default async (browser, data) => {
       pages,
       selectors: data.selectors.layerTwo,
     });
-    console.log(pageData);
   } catch (err) {
     logger.error("Could not get pageData. ".err);
     throw err;
   }
+
+  console.log(pageData);
 
   try {
     let pages = await browser.pages();
