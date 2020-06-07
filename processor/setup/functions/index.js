@@ -7,15 +7,6 @@ String.prototype.replaceAll = function (unwanteds) {
   return str.trim();
 };
 
-String.prototype.replaceAll = function (unwanteds) {
-  let str = unwanteds.reduce((agg, x) => {
-    y = new RegExp(x, "g");
-    agg = agg.replace(y, "");
-    return agg;
-  }, this);
-  return str.trim();
-};
-
 Array.prototype.flatten = function () {
   var ret = [];
   for (var i = 0; i < this.length; i++) {
