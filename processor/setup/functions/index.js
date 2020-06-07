@@ -19,7 +19,7 @@ Array.prototype.flatten = function () {
   return ret;
 };
 
-const clean = (item) => item ? item.replace(/\s\s+/g, " ").trim() : null;
+const clean = (item) => (item ? item.replace(/\s\s+/g, " ").trim() : null);
 const getLink = (node) => {
   let link = node.querySelector("a");
   return link ? link.href : null;
@@ -60,7 +60,7 @@ const getFromText = (node, query) =>
   clean(
     node.querySelector(query)
       ? node.querySelector(query).textContent.trim()
-      : 
+      : null
   );
 const getFromLink = (node, query) => node.querySelector(query).href;
 const getNextMatch = (node, query) =>
