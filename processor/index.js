@@ -1,6 +1,6 @@
 // import path from "path";
 import dotenv from "dotenv";
-dotenv.config({ path: `./envs/.${process.env.NODE_ENV}.env` });
+dotenv.config({ path: `./envs/.env.${process.env.NODE_ENV}` });
 
 import Bull from "bull";
 import { setupPuppeteer } from "./setup";

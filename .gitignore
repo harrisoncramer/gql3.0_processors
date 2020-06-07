@@ -1,5 +1,5 @@
 **/node_modules
-**/**.env
+envs/**
 .DS_Store
 **/dist
 **/faker.js
