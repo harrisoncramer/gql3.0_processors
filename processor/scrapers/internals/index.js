@@ -143,9 +143,14 @@ export const getPageDataWithJQuery = async ({ pages, selectors }) =>
           .textContent.split("\n")
           .map((x) => x.trim())
           .filter((x) => x !== "" && x !== "@" && x !== "0");
-        let location = info[0];
-        let date = info[1];
-        let time = info[2];
+        let location =
+          selectors.locationIndex === null
+            ? null
+            : info[selectors.locationIndex];
+        let date =
+          selectors.dateIndex === null ? null : info[selectors.dateIndex];
+        let time =
+          selectors.timeIndex === null ? null : info[selectors.timeIndex];
         let link = document.URL;
         return {
           title,
