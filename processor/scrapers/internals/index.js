@@ -83,7 +83,7 @@ export const getLinksAndDataV4 = async ({ page, selectors }) =>
           .map((x) => x.trim());
         let date = dateAndTimeInfo[0];
         let time = dateAndTimeInfo[1];
-        let location = getFromText(x, selectors.location).trim();
+        let location = getFromText(x, selectors.location);
         return { link, title, date, time };
       });
   }, selectors);
