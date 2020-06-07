@@ -29,7 +29,7 @@ module.exports = {
       repo: process.env.GIT_REPO,
       path: process.env.PROJECT_PATH,
       "pre-deploy-local": `./deployEnvs.sh ${process.env.PROJECT_PATH} ${hostsBashArgs}`,
-      "post-deploy": `yarn install --ignore-engines && \
+      "post-deploy": `yarn install --ignore-engines --unsafe-perm=true && \
        yarn prod:build && \
        cd client && \
        yarn install --ignore-engines && \
