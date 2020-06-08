@@ -13,7 +13,7 @@ const setup = async () => {
       type: process.env.PUPPETEER_TYPE,
     });
   } catch (err) {
-    logger.error("Could not setup browser.");
+    logger.error("Could not setup browser. ", err);
     throw err;
   }
 
@@ -27,7 +27,7 @@ const setup = async () => {
     });
     logger.info("Connected to queue from job producer.");
   } catch (err) {
-    logger.error("Could not connect to queue.");
+    logger.error("Could not connect to queue. ", err);
     throw err;
   }
 
