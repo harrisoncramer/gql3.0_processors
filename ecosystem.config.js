@@ -30,6 +30,7 @@ module.exports = {
       path: process.env.PROJECT_PATH,
       "pre-deploy-local": `./deployEnvs.sh ${process.env.PROJECT_PATH} ${hostsBashArgs}`,
       "post-deploy": `which node && \
+       source ~/.zshrc && \
        printenv && \
        yarn install --ignore-engines --unsafe-perm=true && \
        yarn prod:build && \
