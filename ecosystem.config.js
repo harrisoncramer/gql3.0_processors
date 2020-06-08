@@ -27,6 +27,7 @@ module.exports = {
       ref: "origin/master",
       repo: process.env.GIT_REPO,
       path: process.env.PROJECT_PATH,
+      "post-setup": `./installLinuxDeps.sh ${process.env.USER} ${hostsBashArgs}`,
       "pre-deploy-local": `./deployEnvs.sh ${process.env.PROJECT_PATH} ${hostsBashArgs}`,
       "post-deploy": `source ~/.zshrc && \
        sudo ./installPuppeteerDependencies.sh && \
