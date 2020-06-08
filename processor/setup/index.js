@@ -1,12 +1,7 @@
-// import path from "path";
+import puppeteer from "puppeteer";
+
 import { logger } from "../loggers/winston";
-
-import puppeteer from "puppeteer-extra";
-import StealthPlugin from "puppeteer-extra-plugin-stealth";
-puppeteer.use(StealthPlugin());
-
 import { getProxy } from "./proxies";
-
 const { getRandom } = require("../../util");
 
 export const setupPuppeteer = async ({ type }) => {
