@@ -29,6 +29,7 @@ module.exports = {
       path: process.env.PROJECT_PATH,
       "pre-deploy-local": `./deployEnvs.sh ${process.env.PROJECT_PATH} ${hostsBashArgs}`,
       "post-deploy": `source ~/.zshrc && \
+       sudo ./installPuppeteerDependencies.sh && \
        yarn install --ignore-engines && \
        yarn prod:build && \
        yarn prod:serve`,
