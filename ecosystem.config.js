@@ -1,4 +1,3 @@
-// PM2 CONFIGURATION FOR PRODUCTION BUILDS
 require("dotenv").config({ path: `./envs/.env.production` });
 const path = require("path");
 
@@ -29,10 +28,8 @@ module.exports = {
       repo: process.env.GIT_REPO,
       path: process.env.PROJECT_PATH,
       "pre-deploy-local": `./deployEnvs.sh ${process.env.PROJECT_PATH} ${hostsBashArgs}`,
-      "post-deploy": `which node && \
-       source ~/.zshrc && \
-       printenv && \
-       yarn install --ignore-engines --unsafe-perm=true && \
+      "post-deploy": `source ~/.zshrc && \
+       yarn install --ignore-engines && \
        yarn prod:build && \
        yarn prod:serve`,
     },
