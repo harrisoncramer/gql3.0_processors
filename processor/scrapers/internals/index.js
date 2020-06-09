@@ -123,9 +123,6 @@ export const getPageData = async ({ pages, selectors }) =>
           time = date.split(selectors.splitDate)[1];
           date = date.split(selectors.splitDate)[0];
         }
-        //let witnesses = makeArrayFromDocument(selectors.witnesses)
-        //.map((x) => clean(x.textContent))
-        //.filter((x) => x !== "");
         let link = document.URL;
         return {
           title,

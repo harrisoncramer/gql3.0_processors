@@ -8,7 +8,7 @@ import { getPageData, getLinks, openNewPages } from "../internals";
 import { logger } from "../../loggers/winston";
 import { setPageBlockers, setPageScripts } from "../../setup/config";
 
-export default async (browser, data, time) => {
+export default async (browser, data) => {
   let page;
 
   try {
@@ -31,7 +31,6 @@ export default async (browser, data, time) => {
     links = await getLinks({
       page,
       selectors: data.selectors.layerOne,
-      time,
     });
   } catch (err) {
     logger.error("Could not get links. ", err);
