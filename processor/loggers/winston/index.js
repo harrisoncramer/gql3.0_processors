@@ -31,7 +31,10 @@ const transport = new winston.transports.DailyRotateFile({
   zippedArchive: true,
   maxSize: "10m",
   maxFiles: "14d",
-  format: format.combine(format.timestamp(), format.json()),
+  format: format.combine(
+    format.timestamp({ format: "YY-MM-DD HH:mm:ss:SSS" }),
+    format.json()
+  ),
 });
 
 transport.on("rotate", (oldFileName, newFilename) => {
