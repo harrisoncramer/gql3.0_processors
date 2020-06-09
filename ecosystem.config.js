@@ -27,7 +27,7 @@ module.exports = {
       ref: "origin/master",
       repo: process.env.GIT_REPO,
       path: process.env.PROJECT_PATH,
-      /// Install Linux dependencies
+      "pre-setup": "source ~/.zshrc",
       "pre-deploy-local": `./deployEnvs.sh ${process.env.PROJECT_PATH} ${hostsBashArgs}`,
       "post-deploy": `source ~/.zshrc && \
        yarn install --ignore-engines && \
