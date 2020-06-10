@@ -48,7 +48,7 @@ setup()
 
         logger.info(`Completed ${job.id} for ${job.data.collection}`);
 
-        // Return the data and the job's data to the listener for parsing
+        // Return the data and the job's meta-information to the listener for parsing
         return {
           data: results,
           meta: job.data,
