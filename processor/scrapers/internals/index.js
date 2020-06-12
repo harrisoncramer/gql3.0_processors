@@ -109,12 +109,12 @@ export const getPageData = async ({ pages, selectors }) =>
         let location = getNextTextFromDocument(selectors.location);
         let date = null;
         let time = null;
-        date = selectors.labels
+        date = selectors.labels.date
           ? getNextTextFromDocument(selectors.date)
           : getTextFromDocument(selectors.date);
 
         if (selectors.time) {
-          time = selectors.labels
+          time = selectors.labels.time
             ? getNextTextFromDocument(selectors.time)
             : getTextFromDocument(selectors.time);
         }
