@@ -38,27 +38,26 @@ setup()
   .then(({ queue, browser }) => {
     logger.info("Processor successfully set up.");
 
-    queue.process("*", async (job) => {
+    queue.process("*", async (x) => {
+      let job = x.data;
       try {
-        const scraper = pickScraper(job.data.type);
-        logger.info(
-          `Running ${job.id} of type ${job.data.type} for ${job.data.name}`
-        );
-        const results = await scraper(browser, job.data, job.timestamp);
+        const scraper = pickScraper(job.type);
+        logger.info(`Running ${x.id} of type ${job.type} for ${job.name}`);
+        const results = await scraper(browser, job, job.timestamp);
 
-        logger.info(`Completed ${job.id} for ${job.data.collection}`);
+        logger.info(`Completed ${x.id} for ${job.collection}`);
 
         // Return the data and the job's meta-information to the listener for parsing
         return {
           data: results,
-          meta: job.data,
+          meta: job,
         };
       } catch (err) {
         let oldPages = await browser.pages();
         await Promise.all(
           oldPages.map(async (page, i) => i > 0 && (await page.close()))
         );
-        logger.error(`Job ${job.id} could not be processed. `, err);
+        logger.error(`Job ${x.id} could not be processed. `, err);
       }
     });
   })

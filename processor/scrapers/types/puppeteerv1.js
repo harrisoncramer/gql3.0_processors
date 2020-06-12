@@ -1,14 +1,11 @@
-// Opens first page, gets links
-// Opens second page, gets the rest of the data
-// Able to differentiate between two date/time tags with same CSS selector
-
 import randomUser from "random-useragent";
 
 import { getPageData, getLinks, openNewPages } from "../internals";
 import { logger } from "../../loggers/winston";
 import { setPageBlockers, setPageScripts } from "../../setup/config";
 
-export default async (browser, data) => {
+export default async (browser, job) => {
+  // Setup puppeteer page for the job
   let page;
 
   try {
@@ -16,7 +13,7 @@ export default async (browser, data) => {
     let userAgentString = randomUser.getRandom();
     await page.setUserAgent(userAgentString);
     await setPageBlockers(page);
-    await page.goto(data.link);
+    await page.goto(job.link);
     await setPageScripts(page);
   } catch (err) {
     logger.error("Could not navigate to inital page. ", err);
@@ -30,7 +27,7 @@ export default async (browser, data) => {
   try {
     links = await getLinks({
       page,
-      selectors: data.selectors.layerOne,
+      selectors: job.selectors.layerOne,
     });
   } catch (err) {
     logger.error("Could not get links. ", err);
@@ -47,7 +44,7 @@ export default async (browser, data) => {
   try {
     pageData = await getPageData({
       pages,
-      selectors: data.selectors.layerTwo,
+      selectors: job.selectors.layerTwo,
     });
   } catch (err) {
     logger.error("Could not get pageData. ".err);
