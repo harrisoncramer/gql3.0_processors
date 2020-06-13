@@ -109,14 +109,14 @@ export const getPageData = async ({ pages, selectors }) =>
         let location = getNextTextFromDocument(selectors.location);
         let date = null;
         let time = null;
-        date = selectors.labels.date
-          ? getNextTextFromDocument(selectors.date)
-          : getTextFromDocument(selectors.date);
+        date = selectors.date.label
+          ? getNextTextFromDocument(selectors.date.value)
+          : getTextFromDocument(selectors.date.value);
 
         if (selectors.time) {
-          time = selectors.labels.time
-            ? getNextTextFromDocument(selectors.time)
-            : getTextFromDocument(selectors.time);
+          time = selectors.time.label
+            ? getNextTextFromDocument(selectors.time.value)
+            : getTextFromDocument(selectors.time.value);
         }
         if (selectors.splitDate) {
           // If data includes splitDate...
