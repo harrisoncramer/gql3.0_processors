@@ -42,14 +42,17 @@ setup()
       let job = x.data;
       try {
         const scraper = pickScraper(job.type);
-        logger.info(`Running ${x.id} of type ${job.type} for ${job.name}`);
+        logger.info(`${x.id} of ${job.type} running for ${job.name}`);
         const results = await scraper(browser, job, job.timestamp);
 
-        logger.info(`Completed ${x.id} for ${job.collection}`);
+        logger.info(`${x.id} of ${job.type} finished for ${job.name}`);
 
         // Return the data and the job's meta-information to the listener for parsing
         return {
-          data: results,
+          data: results.map((x) => {
+            x.committee = job.committee;
+            return x;
+          }),
           meta: job,
         };
       } catch (err) {
@@ -57,7 +60,7 @@ setup()
         await Promise.all(
           oldPages.map(async (page, i) => i > 0 && (await page.close()))
         );
-        logger.error(`Job ${x.id} could not be processed. `, err);
+        logger.error(`${x.id} of ${job.type} for ${job.name} errored: `, err);
       }
     });
   })

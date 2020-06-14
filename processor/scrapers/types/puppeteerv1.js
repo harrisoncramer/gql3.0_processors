@@ -51,8 +51,6 @@ export default async (browser, job) => {
     throw err;
   }
 
-  console.log(pageData);
-
   try {
     let pages = await browser.pages();
     await Promise.all(
