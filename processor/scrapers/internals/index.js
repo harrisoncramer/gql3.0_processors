@@ -12,6 +12,7 @@ export const getLinks = async ({ page, selectors }) =>
 
 export const getLinksAndData = async ({ page, selectors }) =>
   page.evaluate((selectors) => {
+    debugger;
     let rows = makeArrayFromDocument(selectors.rows);
     return rows
       .filter((x, i) => i + 1 <= selectors.depth)

@@ -1,6 +1,6 @@
 import randomUser from "random-useragent";
 
-import { getPageData, getLinks, openNewPages } from "../internals";
+import { getLinksAndData } from "../internals";
 import { logger } from "../../loggers/winston";
 import { setPageBlockers, setPageScripts } from "../../setup/config";
 import { asyncForEach } from "../../../util";
@@ -14,13 +14,14 @@ export default async (browser, job) => {
 
   let results = [];
 
-  console.log(job.phaseOne.range);
-
   await asyncForEach(allLinks, async (link) => {
     // Create new page
     let page;
     try {
       page = await browser.newPage();
+      await page.goto(link);
+      await setPageBlockers(page);
+      await setPageScripts(page);
       let userAgentString = randomUser.getRandom();
       await page.setUserAgent(userAgentString);
     } catch (err) {
@@ -28,40 +29,21 @@ export default async (browser, job) => {
       throw err;
     }
 
-    let links;
+    console.log(job.phaseTwo);
+
+    let dataWithLinks;
     // Go to link and get all sub-links
     try {
-      await page.goto(link);
-      await setPageBlockers(page);
-      await setPageScripts(page);
-      links = await getLinks({
+      dataWithLinks = await getLinksAndData({
         page,
         selectors: job.phaseTwo,
       });
     } catch (err) {
-      logger.error(`Could not get links for link ${link}: `, err);
-    }
-
-    // Create a new page for each link
-    let pages;
-    try {
-      pages = await openNewPages(browser, links);
-    } catch (err) {
-      logger.error("Could not navigate to pages. ", err);
+      logger.error("Could not get links. ", err);
       throw err;
     }
 
-    // For each page, get the data
-    let pageData;
-    try {
-      pageData = await getPageData({
-        pages,
-        selectors: job.phaseThree,
-      });
-    } catch (err) {
-      logger.error("Could not get pageData. ".err);
-      throw err;
-    }
+    console.log(dataWithLinks);
 
     // Close each page
     try {
@@ -75,7 +57,7 @@ export default async (browser, job) => {
     console.log(`Finished with page ${link}`);
 
     // Add the pageData to the results array
-    results.push(...pageData);
+    results.push(...dataWithLinks);
   });
 
   return results;
