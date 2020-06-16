@@ -139,8 +139,8 @@ export const getPageData = async ({ pages, selectors }) =>
         }
         if (selectors.splitDate) {
           // If data includes splitDate...
-          time = date.split(selectors.splitDate)[1];
-          date = date.split(selectors.splitDate)[0];
+          time = date ? date.split(selectors.splitDate)[1] : null; // If date isn't found...
+          date = date ? date.split(selectors.splitDate)[0] : null;
         }
         let link = document.URL;
         return {
