@@ -12,7 +12,6 @@ export const getLinks = async ({ page, selectors }) =>
 
 export const getLinksAndData = async ({ page, selectors }) =>
   page.evaluate((selectors) => {
-    debugger;
     let rows = makeArrayFromDocument(selectors.rows);
     return rows
       .filter((x, i) => i + 1 <= selectors.depth)
@@ -85,7 +84,25 @@ export const getLinksAndDataV4 = async ({ page, selectors }) =>
         let date = dateAndTimeInfo[0];
         let time = dateAndTimeInfo[1];
         let location = getFromText(x, selectors.location);
-        return { link, title, date, time };
+        return { link, title, date, time, location };
+      });
+  }, selectors);
+
+export const getLinksAndDataV4Unlimited = async ({ page, selectors }) =>
+  page.evaluate((selectors) => {
+    let rows = Array.from(document.querySelectorAll(selectors.hearings));
+    return rows
+      .filter((x, i) => i + 1 <= selectors.depth)
+      .map((x) => {
+        let link = getLink(x);
+        let title = getLinkText(x);
+        let dateAndTimeInfo = getFromText(x, selectors.dateTime)
+          .split("-")
+          .map((x) => x.trim());
+        let date = dateAndTimeInfo[0];
+        let time = dateAndTimeInfo[1];
+        let location = getFromText(x, selectors.location);
+        return { link, title, date, time, location };
       });
   }, selectors);
 
@@ -107,6 +124,7 @@ export const getPageData = async ({ pages, selectors }) =>
     pages.map(async (page) => {
       return page.evaluate((selectors) => {
         let title = getTextFromDocument(selectors.title);
+        /// Should have labels option.
         let location = getNextTextFromDocument(selectors.location);
         let date = null;
         let time = null;

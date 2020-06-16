@@ -1,6 +1,6 @@
 import randomUser from "random-useragent";
 
-import { getLinksAndData } from "../internals";
+import { getLinksAndDataV4Unlimited } from "../internals";
 import { logger } from "../../loggers/winston";
 import { setPageBlockers, setPageScripts } from "../../setup/config";
 import { asyncForEach } from "../../../util";
@@ -15,12 +15,11 @@ export default async (browser, job) => {
   let results = [];
 
   await asyncForEach(allLinks, async (link) => {
-    // Create new page
     let page;
     try {
       page = await browser.newPage();
-      await page.goto(link);
       await setPageBlockers(page);
+      await page.goto(link);
       await setPageScripts(page);
       let userAgentString = randomUser.getRandom();
       await page.setUserAgent(userAgentString);
@@ -29,9 +28,10 @@ export default async (browser, job) => {
       throw err;
     }
 
-    let dataWithLinks; // Go to link and get all sub-links
+    let dataWithLinks;
+    // Go to link and get all sub-links
     try {
-      dataWithLinks = await getLinksAndData({
+      dataWithLinks = await getLinksAndDataV4Unlimited({
         page,
         selectors: job.phaseTwo,
       });

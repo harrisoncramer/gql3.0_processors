@@ -4,6 +4,8 @@ import puppeteerv4 from "./types/puppeteerv4";
 import puppeteerv5 from "./types/puppeteerv5";
 import unlimitedv1 from "./types/unlimitedv1";
 import unlimitedv2 from "./types/unlimitedv2";
+import unlimitedv4 from "./types/unlimitedv4";
+import unlimitedv5 from "./types/unlimitedv5";
 
 export const pickScraper = (type) =>
   ((type) => {
@@ -20,6 +22,10 @@ export const pickScraper = (type) =>
         return unlimitedv1;
       case "unlimitedv2":
         return unlimitedv2;
+      case "unlimitedv4":
+        return unlimitedv4;
+      case "unlimitedv5":
+        return unlimitedv5;
       default:
         throw new Error("That routine doesn't exist!");
     }

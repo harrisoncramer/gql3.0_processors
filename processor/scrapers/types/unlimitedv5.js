@@ -1,6 +1,6 @@
 import randomUser from "random-useragent";
 
-import { getLinksAndData } from "../internals";
+import { getPageDataWithJQuery, getLinks, openNewPages } from "../internals";
 import { logger } from "../../loggers/winston";
 import { setPageBlockers, setPageScripts } from "../../setup/config";
 import { asyncForEach } from "../../../util";
@@ -19,9 +19,6 @@ export default async (browser, job) => {
     let page;
     try {
       page = await browser.newPage();
-      await page.goto(link);
-      await setPageBlockers(page);
-      await setPageScripts(page);
       let userAgentString = randomUser.getRandom();
       await page.setUserAgent(userAgentString);
     } catch (err) {
@@ -29,14 +26,38 @@ export default async (browser, job) => {
       throw err;
     }
 
-    let dataWithLinks; // Go to link and get all sub-links
+    let links;
+    // Go to link and get all sub-links
     try {
-      dataWithLinks = await getLinksAndData({
+      await page.goto(link);
+      await setPageBlockers(page);
+      await setPageScripts(page);
+      links = await getLinks({
         page,
         selectors: job.phaseTwo,
       });
     } catch (err) {
-      logger.error("Could not get links. ", err);
+      logger.error(`Could not get links for link ${link}: `, err);
+    }
+
+    // Create a new page for each link
+    let pages;
+    try {
+      pages = await openNewPages(browser, links);
+    } catch (err) {
+      logger.error("Could not navigate to pages. ", err);
+      throw err;
+    }
+
+    // For each page, get the data
+    let pageData;
+    try {
+      pageData = await getPageDataWithJQuery({
+        pages,
+        selectors: job.phaseThree,
+      });
+    } catch (err) {
+      logger.error("Could not get pageData. ".err);
       throw err;
     }
 
@@ -52,7 +73,7 @@ export default async (browser, job) => {
     console.log(`Finished with page ${link}`);
 
     // Add the pageData to the results array
-    results.push(...dataWithLinks);
+    results.push(...pageData);
   });
 
   return results;
