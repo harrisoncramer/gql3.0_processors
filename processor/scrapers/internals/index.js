@@ -70,7 +70,7 @@ export const getLinksAndDataV4 = async ({ page, selectors }) =>
   page.evaluate((selectors) => {
     let rows = Array.from(
       document
-        .querySelectorAll(selectors.upcomingHearings)[0]
+        .querySelector(selectors.upcomingHearings)
         .querySelectorAll(selectors.hearings)
     );
     return rows
@@ -124,8 +124,10 @@ export const getPageData = async ({ pages, selectors }) =>
     pages.map(async (page) => {
       return page.evaluate((selectors) => {
         let title = getTextFromDocument(selectors.title);
-        /// Should have labels option.
-        let location = getNextTextFromDocument(selectors.location);
+        let location = selectors.location.label
+          ? getNextTextFromDocument(selectors.location.value)
+          : getTextFromDocument(selectors.location.value);
+
         let date = null;
         let time = null;
         date = selectors.date.label

@@ -44,6 +44,7 @@ export default async (browser, job) => {
     let pages;
     try {
       pages = await openNewPages(browser, links);
+      //.filter((x) => x !== "https://veterans.house.gov/events/hearings/subcommittee-on-health-hearing-an-examination-of-veteran-access-to-traditional-and-alternative-forms-of-mental-health-therapy")
     } catch (err) {
       logger.error("Could not navigate to pages. ", err);
       throw err;
