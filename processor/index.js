@@ -44,7 +44,6 @@ setup()
         const scraper = pickScraper(job.type);
         logger.info(`${x.id} of ${job.type} running for ${job.name}`);
         const results = await scraper(browser, job, job.timestamp);
-
         logger.info(`${x.id} of ${job.type} finished for ${job.name}`);
 
         // Return the data and the job's meta-information to the listener for parsing
