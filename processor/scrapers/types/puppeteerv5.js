@@ -1,6 +1,11 @@
 import randomUser from "random-useragent";
 
-import { getLinks, getPageDataWithJQuery, openNewPages } from "../internals";
+import {
+  getLinks,
+  getPageDataWithJQuery,
+  openNewPages,
+  getPageText,
+} from "../internals";
 import { logger } from "../../loggers/winston";
 import { setPageBlockers, setPageScripts } from "../../setup/config";
 

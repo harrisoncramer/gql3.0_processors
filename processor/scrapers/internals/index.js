@@ -10,6 +10,11 @@ export const getLinks = async ({ page, selectors }) =>
     return links.filter((x, i) => i + 1 <= selectors.depth && x); // Only return pages w/in depth range, prevents overfetching w/ puppeteer (and where x !== null)
   }, selectors);
 
+export const getPageText = async (page) =>
+  page.evaluate(() => {
+    return document.body.innerText.replace(/[\s,\t\,\n]+/g, " ");
+  });
+
 export const getLinksAndData = async ({ page, selectors }) =>
   page.evaluate((selectors) => {
     let rows = makeArrayFromDocument(selectors.rows);
@@ -151,6 +156,7 @@ export const getPageDataWithJQuery = async ({ pages, selectors }) =>
         let time =
           selectors.timeIndex === null ? null : info[selectors.timeIndex];
         let link = document.URL;
+        let text = document.body.innerText.replace(/[\s,\t\,\n]+/g, " ");
         return {
           title,
           date,
