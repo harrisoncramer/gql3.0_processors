@@ -1,6 +1,6 @@
 import randomUser from "random-useragent";
 
-import { getLinksAndData } from "../internals";
+import { getLinksAndData, getPageText } from "../internals";
 import { logger } from "../../loggers/winston";
 import { setPageBlockers, setPageScripts } from "../../setup/config";
 import { asyncForEach } from "../../../util";
@@ -38,6 +38,22 @@ export default async (browser, job) => {
     } catch (err) {
       logger.error("Could not get links. ", err);
       throw err;
+    }
+
+    // Get the text from each page
+    try {
+      dataWithLinks = await Promise.all(
+        dataWithLinks.map(async (datum) => {
+          let page = await browser.newPage();
+          await setPageBlockers(page);
+          await page.goto(datum.link);
+          await setPageScripts(page);
+          let text = await getPageText(page);
+          return { ...datum, text };
+        })
+      );
+    } catch (err) {
+      logger.error("Could not get page text. ", err);
     }
 
     // Close each page

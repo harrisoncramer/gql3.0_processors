@@ -65,6 +65,19 @@ export const getLinksAndDataV4 = async ({ page, selectors }) =>
       });
   }, selectors);
 
+export const openNewPages = async (browser, links) => {
+  let pages = await Promise.all(links.map(() => browser.newPage()));
+  await Promise.all(
+    pages.map(async (page, i) => {
+      await setPageBlockers(page);
+      await page.goto(links[i]);
+      await setPageScripts(page);
+      return page;
+    })
+  );
+  return pages;
+};
+
 export const getLinksAndDataV4Unlimited = async ({ page, selectors }) =>
   page.evaluate((selectors) => {
     let rows = Array.from(document.querySelectorAll(selectors.hearings));
@@ -83,34 +96,25 @@ export const getLinksAndDataV4Unlimited = async ({ page, selectors }) =>
       });
   }, selectors);
 
-export const openNewPages = async (browser, links) => {
-  let pages = await Promise.all(links.map(() => browser.newPage()));
-  await Promise.all(
-    pages.map(async (page, i) => {
-      await setPageBlockers(page);
-      await page.goto(links[i]);
-      await setPageScripts(page);
-      return page;
-    })
-  );
-  return pages;
-};
-
 export const getPageData = async ({ pages, selectors }) =>
   Promise.all(
-    pages.map(async (page) => {
-      return page.evaluate((selectors) => {
+    pages.map(async (page) =>
+      page.evaluate((selectors) => {
         let title = getTextFromDocument(selectors.title);
-        let location = selectors.location.label
-          ? getNextTextFromDocument(selectors.location.value)
-          : getTextFromDocument(selectors.location.value);
-
         let date = null;
         let time = null;
-        date = selectors.date.label
-          ? getNextTextFromDocument(selectors.date.value)
-          : getTextFromDocument(selectors.date.value);
+        let location = null;
 
+        if (selectors.date) {
+          date = selectors.date.label
+            ? getNextTextFromDocument(selectors.date.value)
+            : getTextFromDocument(selectors.date.value);
+        }
+        if (selectors.location) {
+          selectors.location.label
+            ? getNextTextFromDocument(selectors.location.value)
+            : getTextFromDocument(selectors.location.value);
+        }
         if (selectors.time) {
           time = selectors.time.label
             ? getNextTextFromDocument(selectors.time.value)
@@ -132,8 +136,8 @@ export const getPageData = async ({ pages, selectors }) =>
           link,
           text,
         };
-      }, selectors);
-    })
+      }, selectors)
+    )
   );
 
 export const getPageDataWithJQuery = async ({ pages, selectors }) =>
@@ -163,6 +167,7 @@ export const getPageDataWithJQuery = async ({ pages, selectors }) =>
           time,
           location,
           link,
+          text,
         };
       }, selectors);
     })

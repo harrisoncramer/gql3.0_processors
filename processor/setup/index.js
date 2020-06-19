@@ -42,6 +42,7 @@ export const setupPuppeteer = async ({ type }) => {
   /// Initialize Browser
   const browser = await puppeteer.launch({
     headless: isProduction || process.env.IS_HEADLESS,
+    defaultViewport: null,
     devtools: !isProduction,
     args,
   });
