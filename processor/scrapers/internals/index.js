@@ -121,15 +121,29 @@ export const getPageData = async ({ pages, selectors }) =>
             : getTextFromDocument(selectors.time.value);
         }
         if (selectors.regexTime) {
-          let isMatch = document.body.innerText.match(
-            /((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm]))/
+          let myTimeRegex = new RegExp(
+            /((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm])?)/
           );
+          let isMatch = document.body.innerText.match(myTimeRegex);
           if (!isMatch) {
             time = null;
           } else {
             time = isMatch[0];
           }
         }
+        if (selectors.regexDate) {
+          let myDateRegex = new RegExp(
+            /(monday|tuesday|wednesday|thursday|friday|saturday|sunday),? (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9][0-9]?),? \d\d\d\d/,
+            "gi"
+          );
+          let isMatch = document.body.innerText.match(myDateRegex);
+          if (!isMatch) {
+            date = null;
+          } else {
+            date = isMatch[0];
+          }
+        }
+
         if (selectors.splitDate) {
           // If data includes splitDate...
           time = date ? date.split(selectors.splitDate)[1] : null; // If date isn't found...
