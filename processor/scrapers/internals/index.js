@@ -120,6 +120,16 @@ export const getPageData = async ({ pages, selectors }) =>
             ? getNextTextFromDocument(selectors.time.value)
             : getTextFromDocument(selectors.time.value);
         }
+        if (selectors.regexTime) {
+          let isMatch = document.body.innerText.match(
+            /((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm]))/
+          );
+          if (!isMatch) {
+            time = null;
+          } else {
+            time = isMatch[0];
+          }
+        }
         if (selectors.splitDate) {
           // If data includes splitDate...
           time = date ? date.split(selectors.splitDate)[1] : null; // If date isn't found...
