@@ -24,14 +24,20 @@ export const getLinksAndData = async ({ page, selectors }) =>
         let link = getLink(x);
         let title = getLinkText(x);
         let location = getFromText(x, selectors.location);
-        let date = getFromText(x, selectors.date);
+        let date;
         let time;
-        // Only if time selector is present
         if (selectors.time) {
           time = getNthInstanceOfText(
             x,
             selectors.time.selector,
             selectors.time.instance
+          );
+        }
+        if (selectors.date) {
+          date = getNthInstanceOfText(
+            x,
+            selectors.date.selector,
+            selectors.date.instance
           );
         }
         if (selectors.splitDate) {
@@ -100,6 +106,7 @@ export const getPageData = async ({ pages, selectors }) =>
   Promise.all(
     pages.map(async (page) =>
       page.evaluate((selectors) => {
+        debugger;
         let title = getTextFromDocument(selectors.title);
         let date = null;
         let time = null;
@@ -122,7 +129,7 @@ export const getPageData = async ({ pages, selectors }) =>
         }
         if (selectors.regexTime) {
           let myTimeRegex = new RegExp(
-            /((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm])?)/
+            /((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp]\.?[Mm]\.?)?)/
           );
           let isMatch = document.body.innerText.match(myTimeRegex);
           if (!isMatch) {

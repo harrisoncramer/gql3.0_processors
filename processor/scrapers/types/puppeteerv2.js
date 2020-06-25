@@ -36,7 +36,7 @@ export default async (browser, data) => {
       dataWithLinks.map(async (datum) => {
         let page = await browser.newPage();
         await setPageBlockers(page);
-        await page.goto(data.link);
+        await page.goto(datum.link);
         await setPageScripts(page);
         let text = await getPageText(page, data.selectors.layerOne);
         return { ...datum, text };
@@ -45,6 +45,8 @@ export default async (browser, data) => {
   } catch (err) {
     logger.error("Could not get page text. ", err);
   }
+
+  console.log(dataWithLinks);
 
   try {
     let pages = await browser.pages();
