@@ -70,8 +70,6 @@ export default async (browser, job) => {
       throw err;
     }
 
-    console.log(`Finished with page ${link}`);
-
     // Add the pageData to the results array
     results.push(...pageData);
   });
