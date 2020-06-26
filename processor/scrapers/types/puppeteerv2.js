@@ -46,8 +46,6 @@ export default async (browser, data) => {
     logger.error("Could not get page text. ", err);
   }
 
-  console.log(dataWithLinks);
-
   try {
     let pages = await browser.pages();
     await Promise.all(

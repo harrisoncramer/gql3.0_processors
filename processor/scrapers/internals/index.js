@@ -140,7 +140,7 @@ export const getPageData = async ({ pages, selectors }) =>
         }
         if (selectors.regexDate) {
           let myDateRegex = new RegExp(
-            /(monday|tuesday|wednesday|thursday|friday|saturday|sunday),? (January|February|March|April|May|June|July|August|September|October|November|December) ([0-9][0-9]?),? \d\d\d\d/,
+            /(monday|tuesday|wednesday|thursday|friday|saturday|sunday)?,? ?(January|February|March|April|May|June|July|August|September|October|November|December) ([0-9][0-9]?),? \d\d\d\d/,
             "gi"
           );
           let isMatch = document.body.innerText.match(myDateRegex);
