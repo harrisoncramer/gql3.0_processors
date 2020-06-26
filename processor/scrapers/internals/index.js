@@ -106,7 +106,6 @@ export const getPageData = async ({ pages, selectors }) =>
   Promise.all(
     pages.map(async (page) =>
       page.evaluate((selectors) => {
-        debugger;
         let title = getTextFromDocument(selectors.title);
         let date = null;
         let time = null;
@@ -118,7 +117,7 @@ export const getPageData = async ({ pages, selectors }) =>
             : getTextFromDocument(selectors.date.value);
         }
         if (selectors.location) {
-          selectors.location.label
+          location = selectors.location.label
             ? getNextTextFromDocument(selectors.location.value)
             : getTextFromDocument(selectors.location.value);
         }
