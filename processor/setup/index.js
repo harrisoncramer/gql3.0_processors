@@ -1,7 +1,7 @@
 import puppeteer from "puppeteer";
 
 import { logger } from "../loggers/winston";
-import { getProxy } from "./proxies";
+import { getProxies } from "./proxies";
 const { getRandom } = require("../../util");
 
 export const setupPuppeteer = async ({ type }) => {
@@ -29,10 +29,9 @@ export const setupPuppeteer = async ({ type }) => {
   }
 
   if (isProxy) {
-    let proxies = await getProxy();
+    let proxies = await getProxies();
     let proxyIndex = getRandom(0, proxies.length - 1)();
-    let proxyData = proxies[proxyIndex];
-    proxy = `http://${proxyData.ip}:${proxyData.port}`;
+    proxy = proxies[proxyIndex];
   }
 
   if (isProxy || isTor) {
