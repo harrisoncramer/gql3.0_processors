@@ -16,7 +16,6 @@ export const asyncForEach = async (array, callback) => {
   return results;
 };
 
-/////////// RETRY RESOURCE UNTIL SUCCESSFUL /////////////
 const timeoutRequest = (signal, url, options) =>
   new Promise((res, rej) => {
     let proxiedRequest = rp.defaults({ ...options });
