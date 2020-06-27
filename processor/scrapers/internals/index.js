@@ -15,6 +15,35 @@ export const getPageText = async (page) =>
     return document.body.innerText.replace(/[\s,\t\,\n]+/g, " ");
   });
 
+export const getLinksAndDatav2 = async ({ page, selectors }) =>
+  page.evaluate((selectors) => {
+    let rows = makeArrayFromDocument(selectors.rows);
+    return rows
+      .filter((x, i) => i + 1 <= selectors.depth)
+      .map((x) => {
+        let link = getLink(x);
+        let title = getLinkText(x);
+        let date;
+        let time;
+        let innerText = x.innerText.trim();
+        let myTimeRegex = new RegExp(
+          /((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp]\.?[Mm]\.?)?)/
+        );
+        let myDateRegex = new RegExp(/[0-9]{2}\/[0-9]{2}\/[0-9]{4}/, "gi");
+        let isDate = innerText.match(myDateRegex);
+        let isTime = innerText.match(myTimeRegex);
+        if (isDate) {
+          date = isDate[0];
+        }
+
+        if (isTime) {
+          time = isTime[0];
+        }
+
+        return { link, title, date, time };
+      });
+  }, selectors);
+
 export const getLinksAndData = async ({ page, selectors }) =>
   page.evaluate((selectors) => {
     let rows = makeArrayFromDocument(selectors.rows);
