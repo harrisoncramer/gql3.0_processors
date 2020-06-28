@@ -17,7 +17,6 @@ export default async (browser, job) => {
     if (job.nice) {
       logger.info(`Being nice for ${job.nice / 1000} seconds...`);
       await wait(job.nice);
-      logger.info(`Continuing...`);
     }
 
     // Create new page
@@ -38,7 +37,7 @@ export default async (browser, job) => {
     try {
       dataWithLinks = await getLinksAndDatav2({
         page,
-        selectors: job.phaseOne,
+        selectors: job.phaseTwo,
       });
       console.log(dataWithLinks.length);
     } catch (err) {

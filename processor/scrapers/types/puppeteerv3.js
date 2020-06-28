@@ -20,7 +20,6 @@ export default async (browser, data) => {
   }
 
   let dataWithLinks;
-
   try {
     dataWithLinks = await getLinksAndDatav2({
       page,
