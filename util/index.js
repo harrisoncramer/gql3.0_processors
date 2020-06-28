@@ -1,6 +1,12 @@
 import randomUser from "random-useragent";
 import rp from "request-promise";
 
+// Wait in milliseconds
+export const wait = (timeout) =>
+  new Promise((resolve) => {
+    setTimeout(resolve, timeout);
+  });
+
 export const getRandom = (bottom, top) => {
   return function () {
     return Math.floor(Math.random() * (1 + top - bottom)) + bottom;

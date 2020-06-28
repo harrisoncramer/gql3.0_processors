@@ -3,18 +3,22 @@ import randomUser from "random-useragent";
 import { getLinksAndData, getPageText } from "../internals";
 import { logger } from "../../loggers/winston";
 import { setPageBlockers, setPageScripts } from "../../setup/config";
-import { asyncForEach } from "../../../util";
+import { asyncForEach, wait } from "../../../util";
 
 export default async (browser, job) => {
   // Setup initial list of links
-  let baseLink = job.phaseOne.baseLink;
-  let allLinks = job.phaseOne.range.map((x) =>
-    baseLink.replace("SUBSTITUTE", x)
-  );
+  let link = job.phaseOne.link;
+  let allLinks = job.phaseOne.range.map((x) => link.replace("SUBSTITUTE", x));
 
   let results = [];
 
   await asyncForEach(allLinks, async (link) => {
+    // If needed, wait...
+    if (job.nice) {
+      logger.info(`Being nice for ${job.nice / 1000} seconds...`);
+      await wait(job.nice);
+      logger.info(`Continuing...`);
+    }
     // Create new page
     let page;
     try {

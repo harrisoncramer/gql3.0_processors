@@ -65,7 +65,9 @@ export const setupPuppeteer = async ({ type }) => {
     }
   }
 
-  logger.info(`Configured through site on ${proxy}`);
+  logger.info(
+    `Configured through site ${isTor || isProxy ? proxy : "locally."}`
+  );
 
   return { browser };
 };

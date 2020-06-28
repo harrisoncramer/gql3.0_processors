@@ -1,16 +1,14 @@
 import randomUser from "random-useragent";
 
-import { getLinksAndDataV4Unlimited } from "../internals";
+import { getLinksAndDatav2, getPageText } from "../internals";
 import { logger } from "../../loggers/winston";
 import { setPageBlockers, setPageScripts } from "../../setup/config";
 import { asyncForEach, wait } from "../../../util";
 
 export default async (browser, job) => {
   // Setup initial list of links
-  let baseLink = job.phaseOne.baseLink;
-  let allLinks = job.phaseOne.range.map((x) =>
-    baseLink.replace("SUBSTITUTE", x)
-  );
+  let link = job.phaseOne.link;
+  let allLinks = job.phaseOne.range.map((x) => link.replace("SUBSTITUTE", x));
 
   let results = [];
 
@@ -21,11 +19,13 @@ export default async (browser, job) => {
       await wait(job.nice);
       logger.info(`Continuing...`);
     }
+
+    // Create new page
     let page;
     try {
       page = await browser.newPage();
-      await setPageBlockers(page);
       await page.goto(link);
+      await setPageBlockers(page);
       await setPageScripts(page);
       let userAgentString = randomUser.getRandom();
       await page.setUserAgent(userAgentString);
@@ -34,16 +34,32 @@ export default async (browser, job) => {
       throw err;
     }
 
-    let dataWithLinks;
-    // Go to link and get all sub-links
+    let dataWithLinks; // Go to link and get all sub-links
     try {
-      dataWithLinks = await getLinksAndDataV4Unlimited({
+      dataWithLinks = await getLinksAndDatav2({
         page,
-        selectors: job.phaseTwo,
+        selectors: job.phaseOne,
       });
+      console.log(dataWithLinks.length);
     } catch (err) {
       logger.error("Could not get links. ", err);
       throw err;
+    }
+
+    // Get the text from each page
+    try {
+      dataWithLinks = await Promise.all(
+        dataWithLinks.map(async (datum) => {
+          let page = await browser.newPage();
+          await setPageBlockers(page);
+          await page.goto(datum.link);
+          await setPageScripts(page);
+          let text = await getPageText(page);
+          return { ...datum, text };
+        })
+      );
+    } catch (err) {
+      logger.error("Could not get page text. ", err);
     }
 
     // Close each page

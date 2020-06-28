@@ -3,7 +3,7 @@ import randomUser from "random-useragent";
 import { getPageData, getLinks, openNewPages } from "../internals";
 import { logger } from "../../loggers/winston";
 import { setPageBlockers, setPageScripts } from "../../setup/config";
-import { asyncForEach } from "../../../util";
+import { asyncForEach, wait } from "../../../util";
 
 export default async (browser, job) => {
   // Setup initial list of links
@@ -13,6 +13,12 @@ export default async (browser, job) => {
   let results = [];
 
   await asyncForEach(allLinks, async (link) => {
+    // If needed, wait...
+    if (job.nice) {
+      logger.info(`Being nice for ${job.nice / 1000} seconds...`);
+      await wait(job.nice);
+    }
+
     // Create new page
     let page;
     try {
@@ -24,8 +30,8 @@ export default async (browser, job) => {
       throw err;
     }
 
-    let links;
     // Go to link and get all sub-links
+    let links;
     try {
       await page.goto(link);
       await setPageBlockers(page);
@@ -41,7 +47,17 @@ export default async (browser, job) => {
     // Create a new page for each link
     let pages;
     try {
-      pages = await openNewPages(browser, links);
+      pages = await openNewPages(
+        browser,
+        links
+        //links.filter(
+        //(x) =>
+        //![
+        //"https://www.commerce.senate.gov/2018/4/facebook-social-media-privacy-and-the-use-and-abuse-of-data",
+        //"https://www.judiciary.senate.gov/meetings/chinas-non-traditional-espionage-against-the-united-states-the-threat-and-potential-policy-responses",
+        //].includes(x)
+        //)
+      );
     } catch (err) {
       logger.error("Could not navigate to pages. ", err);
       throw err;

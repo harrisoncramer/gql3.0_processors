@@ -5,6 +5,7 @@ import puppeteerv4 from "./types/puppeteerv4";
 import puppeteerv5 from "./types/puppeteerv5";
 import unlimitedv1 from "./types/unlimitedv1";
 import unlimitedv2 from "./types/unlimitedv2";
+import unlimitedv3 from "./types/unlimitedv3";
 import unlimitedv4 from "./types/unlimitedv4";
 import unlimitedv5 from "./types/unlimitedv5";
 
@@ -25,6 +26,8 @@ export const pickScraper = (type) =>
         return unlimitedv1;
       case "unlimitedv2":
         return unlimitedv2;
+      case "unlimitedv3":
+        return unlimitedv3;
       case "unlimitedv4":
         return unlimitedv4;
       case "unlimitedv5":

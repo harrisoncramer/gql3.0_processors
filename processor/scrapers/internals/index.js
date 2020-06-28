@@ -2,6 +2,8 @@
 // Many of these functions are passed into the page context
 
 import { setPageBlockers, setPageScripts } from "../../setup/config";
+import { wait } from "../../../util";
+import { logger } from "../../loggers/winston";
 
 export const getLinks = async ({ page, selectors }) =>
   page.evaluate((selectors) => {
@@ -102,15 +104,36 @@ export const getLinksAndDataV4 = async ({ page, selectors }) =>
 
 export const openNewPages = async (browser, links) => {
   let pages = await Promise.all(links.map(() => browser.newPage()));
-  await Promise.all(
+  let navResults = await Promise.allSettled(
     pages.map(async (page, i) => {
-      await setPageBlockers(page);
-      await page.goto(links[i]);
-      await setPageScripts(page);
-      return page;
+      try {
+        await setPageBlockers(page);
+        await page.goto(links[i]);
+        await setPageScripts(page);
+        return Promise.resolve({ page });
+      } catch (err) {
+        return Promise.reject({ page, err, link: links[i] });
+      }
     })
   );
-  return pages;
+
+  let successfulNavigations = navResults
+    .filter((x) => x.status === "fulfilled")
+    .map((x) => x.value);
+  let failedNavigations = navResults
+    .filter((x) => x.status !== "fulfilled")
+    .map((x) => x.reason);
+
+  if (failedNavigations.length > 0) {
+    await Promise.all(
+      failedNavigations.map(async (x) => {
+        logger.error(`Failed to navigate to ${x.link}, skipping: `, x.err);
+        return x.page.close();
+      })
+    );
+  }
+
+  return successfulNavigations.map((x) => x.page);
 };
 
 export const getLinksAndDataV4Unlimited = async ({ page, selectors }) =>
@@ -132,7 +155,7 @@ export const getLinksAndDataV4Unlimited = async ({ page, selectors }) =>
   }, selectors);
 
 export const getPageData = async ({ pages, selectors }) =>
-  Promise.all(
+  await Promise.all(
     pages.map(async (page) =>
       page.evaluate((selectors) => {
         let title = getTextFromDocument(selectors.title);

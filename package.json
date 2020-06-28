@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "NODE_ENV=development nodemon --exec babel-node processor/index.js",
+    "dev:debug": "NODE_ENV=development nodemon --exec babel-node debug processor/index.js",
     "prod:build": "webpack --config webpack.config.js",
     "prod:setup": "NODE_ENV=production pm2 deploy production setup",
     "prod:deploy": "NODE_ENV=production pm2 deploy ecosystem.config.js production",

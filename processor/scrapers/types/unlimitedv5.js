@@ -3,7 +3,7 @@ import randomUser from "random-useragent";
 import { getPageDataWithJQuery, getLinks, openNewPages } from "../internals";
 import { logger } from "../../loggers/winston";
 import { setPageBlockers, setPageScripts } from "../../setup/config";
-import { asyncForEach } from "../../../util";
+import { asyncForEach, wait } from "../../../util";
 
 export default async (browser, job) => {
   // Setup initial list of links
@@ -15,6 +15,12 @@ export default async (browser, job) => {
   let results = [];
 
   await asyncForEach(allLinks, async (link) => {
+    // If needed, wait...
+    if (job.nice) {
+      logger.info(`Being nice for ${job.nice / 1000} seconds...`);
+      await wait(job.nice);
+      logger.info(`Continuing...`);
+    }
     // Create new page
     let page;
     try {
