@@ -39,7 +39,6 @@ export default async (browser, job) => {
         page,
         selectors: job.phaseTwo,
       });
-      console.log(dataWithLinks.length);
     } catch (err) {
       logger.error("Could not get links. ", err);
       throw err;
