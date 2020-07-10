@@ -5,6 +5,18 @@ import { setPageBlockers, setPageScripts } from "../../setup/config";
 import { wait } from "../../../util";
 import { logger } from "../../loggers/winston";
 
+export const getLinksFiltered = async ({ page, selectors }) =>
+  page.evaluate((selectors) => {
+    let rows = makeArrayFromDocument(selectors.rows);
+    const regexSelector = new RegExp(selectors.filter.keyword, "i");
+    let filteredRows = rows.filter((row) => {
+      let text = getFromText(row, selectors.filter.selector);
+      return !!text.match(regexSelector);
+    });
+    let links = filteredRows.map((x) => getLink(x));
+    return links.filter((x, i) => i + 1 <= selectors.depth && x); // Only return pages w/in depth range, prevents overfetching w/ puppeteer (and where x !== null)
+  }, selectors);
+
 export const getLinks = async ({ page, selectors }) =>
   page.evaluate((selectors) => {
     let rows = makeArrayFromDocument(selectors.rows);
