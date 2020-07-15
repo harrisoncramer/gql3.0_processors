@@ -11,7 +11,10 @@ export const getLinksFiltered = async ({ page, selectors }) =>
     const regexSelector = new RegExp(selectors.filter.keyword, "i");
     let filteredRows = rows.filter((row) => {
       let text = getFromText(row, selectors.filter.selector);
-      return !!text.match(regexSelector);
+      if (text) {
+        return !!text.match(regexSelector);
+      }
+      return false;
     });
     let links = filteredRows.map((x) => getLink(x));
     return links.filter((x, i) => i + 1 <= selectors.depth && x); // Only return pages w/in depth range, prevents overfetching w/ puppeteer (and where x !== null)
