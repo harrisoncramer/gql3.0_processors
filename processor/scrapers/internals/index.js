@@ -174,6 +174,10 @@ export const getPageData = async ({ pages, selectors }) =>
     pages.map(async (page) =>
       page.evaluate((selectors) => {
         let title = getTextFromDocument(selectors.title);
+        if (selectors.titleTrimRegex) {
+          let titleRegex = new RegExp(selectors.titleTrimRegex, "i");
+          title = title.replace(titleRegex, "");
+        }
         let date = null;
         let time = null;
         let location = null;
