@@ -8,7 +8,13 @@ import { asyncForEach, wait } from "../../../util";
 export default async (browser, job) => {
   // Setup initial list of links
   let link = job.phaseOne.link;
-  let allLinks = job.phaseOne.range.map((x) => link.replace("SUBSTITUTE", x));
+  let allLinks;
+  if (job.phaseOne.range) {
+    allLinks = job.phaseOne.range.map((x) => link.replace("SUBSTITUTE", x));
+  } else {
+    // If there isn't a range, just use the only link supplied
+    allLinks = [job.phaseOne.link];
+  }
 
   let results = [];
 
@@ -47,17 +53,7 @@ export default async (browser, job) => {
     // Create a new page for each link
     let pages;
     try {
-      pages = await openNewPages(
-        browser,
-        links
-        //links.filter(
-        //(x) =>
-        //![
-        //"https://www.commerce.senate.gov/2018/4/facebook-social-media-privacy-and-the-use-and-abuse-of-data",
-        //"https://www.judiciary.senate.gov/meetings/chinas-non-traditional-espionage-against-the-united-states-the-threat-and-potential-policy-responses",
-        //].includes(x)
-        //)
-      );
+      pages = await openNewPages(browser, links);
     } catch (err) {
       logger.error("Could not navigate to pages. ", err);
       throw err;
@@ -87,6 +83,7 @@ export default async (browser, job) => {
     // Add the pageData to the results array
     results.push(...pageData);
   });
+  console.log(results.length);
 
   return results;
 };

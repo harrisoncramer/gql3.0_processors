@@ -8,7 +8,13 @@ import { asyncForEach, wait } from "../../../util";
 export default async (browser, job) => {
   // Setup initial list of links
   let link = job.phaseOne.link;
-  let allLinks = job.phaseOne.range.map((x) => link.replace("SUBSTITUTE", x));
+  let allLinks;
+  if (job.phaseOne.range) {
+    allLinks = job.phaseOne.range.map((x) => link.replace("SUBSTITUTE", x));
+  } else {
+    // If there isn't a range, just use the only link supplied
+    allLinks = [job.phaseOne.link];
+  }
 
   let results = [];
 
